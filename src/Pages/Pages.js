@@ -1,6 +1,6 @@
 import {Page} from "./Page"; 
 
-export function Pages() { 
+export function Pages(props) { 
   return (<>
     <ul>
       <Page />

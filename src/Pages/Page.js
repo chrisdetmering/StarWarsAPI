@@ -1,6 +1,6 @@
 
-export function Page() { 
+export function Page(props) { 
   return(<>
-    <li>Page 1</li>
+    <li><button>1</button></li>
   </>)
 }
