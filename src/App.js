@@ -5,6 +5,7 @@ import {CharactersList} from "./Characters/CharactersList";
 import {Pages} from "./Pages/Pages"; 
 import {MissingData} from "./Util/MissingData"; 
 
+
 function App() {
   const [allCharacters, setAllCharacters] = useState([]); 
   const [searchCriteria, setSearchCriteria] = useState(""); 
@@ -12,7 +13,31 @@ function App() {
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => { 
-      getAllCharacters();
+      async function getDisplayedCharacters() { 
+        const result = await fetch(`https://swapi.dev/api/people/?page=1`)
+        const data = await result.json(); 
+      
+        if (data) {
+          const starWarsCharacters = getMissingData(data.results); 
+
+        
+          setDisplayedCharacters(prevDisplayed => { 
+            return [...prevDisplayed, ...starWarsCharacters];
+          });
+          getAllCharacters().then(rest => { 
+            let newAllChars = rest.reduce((acc, current) => { 
+              return [...acc, ...current]; 
+            }, []); 
+
+            setAllCharacters(newAllChars);  
+          }); 
+        }
+        setIsLoading(false);
+      }
+
+
+      getDisplayedCharacters(); 
+      // getAllCharacters();
   }, []); 
 
   useEffect(() => { 
@@ -21,34 +46,15 @@ function App() {
 
 
 
-  async function getAllCharacters() { 
 
-    try { 
-      for (let i = 1; i <= 9; i++) { 
-        const result = await fetch(`https://swapi.dev/api/people/?page=${i}`)
-        const data = await result.json(); 
-        if (data.results) { 
-         
-          const starWarsCharacters = getMissingData(data.results); 
-          // const charactersWithHomeWorlds = await getHomeWorlds(starWarsCharacters);
-          // const characterWithSpecies = await  getSpecies(charactersWithHomeWorlds);
-          
-          setIsLoading(false);
-          setAllCharacters(prevAllCharacters => { 
-              return [...prevAllCharacters, ...starWarsCharacters]
-          });
-          setDisplayedCharacters(prevDisplayed => { 
-              return [...prevDisplayed, ...starWarsCharacters];
-          });
-        }
-
-
-      }
-      
-    } catch(e) { 
-      console.error(e)
-    }
-
+function getAllCharacters() { 
+    const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9]; 
+    return Promise.all(pages.map(async pageNumber => { 
+      const result = await fetch(`https://swapi.dev/api/people/?page=${pageNumber}`)
+      const data = await result.json(); 
+      const starWarsCharacters = getMissingData(data.results); 
+      return starWarsCharacters
+    }))
   }
 
   function getMissingData(characters) { 
