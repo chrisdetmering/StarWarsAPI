@@ -1,6 +1,14 @@
+import "./Page.css"; 
 
 export function Page(props) { 
+  const {pageNum, onPageClick} = props; 
   return(<>
-    <li><button>1</button></li>
+    <li>
+      <button 
+      className="PageNumberButton"
+        onClick={() => onPageClick(pageNum)}>
+          {pageNum + 1}
+      </button>
+    </li>
   </>)
 }

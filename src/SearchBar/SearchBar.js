@@ -1,4 +1,4 @@
-
+import "./SearchBar.css"; 
 
 export function SearchBar(props) { 
   const {onSearchInput, searchCriteria} = props; 
@@ -7,7 +7,7 @@ export function SearchBar(props) {
   return (<>
     <input 
       type="text" 
-      style={{width: "350px"}}
+      className="SearchBar"
       placeholder="Are these the droids you are looking for?"
       
       onChange={onSearchInput}

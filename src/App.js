@@ -7,10 +7,13 @@ import {MissingData} from "./Util/MissingData";
 
 
 function App() {
+  const NUM_PAGES = [0, 1, 2, 3, 4, 5, 6, 7, 8]; 
+
   const [allCharacters, setAllCharacters] = useState([]); 
   const [searchCriteria, setSearchCriteria] = useState(""); 
   const [displayedCharacters, setDisplayedCharacters] = useState([]); 
   const [isLoading, setIsLoading] = useState(true); 
+  const [page, setPage] = useState(0); 
 
   useEffect(() => { 
       async function getDisplayedCharacters() { 
@@ -35,22 +38,32 @@ function App() {
         setIsLoading(false);
       }
 
-
       getDisplayedCharacters(); 
-      // getAllCharacters();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
+
   useEffect(() => { 
-    console.log(displayedCharacters)
-  }, [displayedCharacters]); 
+    if (searchCriteria === '') { 
+      setDisplayedCharacters(allCharacters.slice(0, 10))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchCriteria]); 
 
 
 
+  useEffect(() => { 
+    const startIndex = page * 10; 
+    const endIndex = startIndex + 10; 
+    setDisplayedCharacters(allCharacters.slice(startIndex, endIndex)); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
-function getAllCharacters() { 
-    const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9]; 
-    return Promise.all(pages.map(async pageNumber => { 
-      const result = await fetch(`https://swapi.dev/api/people/?page=${pageNumber}`)
+
+  function getAllCharacters() { 
+ 
+    return Promise.all(NUM_PAGES.map(async pageNumber => { 
+      const result = await fetch(`https://swapi.dev/api/people/?page=${pageNumber + 1}`)
       const data = await result.json(); 
       const starWarsCharacters = getMissingData(data.results); 
       return starWarsCharacters
@@ -67,12 +80,10 @@ function getAllCharacters() {
 
 
 
-
-
   function handleSearchInput(e) { 
     setSearchCriteria(e.target.value); 
     const newCharacters = allCharacters.filter(character => { 
-     return character.name.startsWith(e.target.value); 
+     return character.name.toLowerCase().startsWith(e.target.value.toLowerCase()); 
     })
   
     setDisplayedCharacters(newCharacters); 
@@ -82,14 +93,16 @@ function getAllCharacters() {
 
 
   return (<>
-    <h1>STAR WARS SEARCH</h1>
+    <h1 className="StarWarsHeader">STAR WARS SEARCH</h1>
     <SearchBar 
       onSearchInput={handleSearchInput} 
       searchCriteria={searchCriteria}/>
     <CharactersList 
       characters={displayedCharacters} />
-    {isLoading && <h1>Loading...</h1>}
-    <Pages />
+    {isLoading && <h1 className="LoadingHeader">Loading...</h1>}
+    <Pages 
+      NUM_PAGES={NUM_PAGES}
+      onPageClick={setPage}/>
   </>);
 }
 

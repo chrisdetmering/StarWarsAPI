@@ -1,4 +1,5 @@
 import {CharacterListItem} from "./CharacterListItem"; 
+import "./CharactersList.css"; 
 
 export function CharactersList(props) { 
 
@@ -8,7 +9,7 @@ export function CharactersList(props) {
   ))
 
   return (<>
-    <table>
+    <table className="CharactersTable">
       <thead>
         <tr>
           <th>NAME</th>
