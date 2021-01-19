@@ -8,10 +8,10 @@ export function MissingData(props) {
 
   function setUrl() { 
     if (homeWorldUrl) { 
-      return homeWorldUrl; 
+      return homeWorldUrl.replace(/^http:\/\//i, 'https://'); 
     }
     if (speciesUrl[0]) { 
-      return speciesUrl[0]; 
+      return speciesUrl[0].replace(/^http:\/\//i, 'https://');; 
     }
   }
 
