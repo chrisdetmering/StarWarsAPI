@@ -10,7 +10,7 @@ Use it [here](https://star-wars-search-api.herokuapp.com/)
 
 <br>
 
-<image src="images/game_play_crop.png">
+<image src="screen-shot.png">
 
 ## Summary
 
